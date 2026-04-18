@@ -1,19 +1,6 @@
 # Emulación Android y ejecución de PIVAA.apk con Genymotion y ADB
 
-## 1. ¿Qué es PIVAA.apk?
-
-PIVAA (**Purposefully Insecure and Vulnerable Android Application**) es una app Android intencionadamente vulnerable creada por **High-Tech Bridge** para practicar análisis de seguridad y pruebas con escáneres móviles. Es el sustituto de DIVA para este tipo de ejercicios.
-
-### Vulnerabilidades que incluye
-
-- Datos hardcodeados
-- Ficheros inseguros
-- Componentes exportados
-- Carga dinámica de código
-- Copias de seguridad activadas
-- Otros patrones útiles para auditoría
-
-### 1.1. Descarga de PIVAA
+## 1. Descarga de PIVAA
 
 ```bash
 mkdir -p ~/lab-pivaa
@@ -284,48 +271,4 @@ adb -s 127.0.0.1:6555 logcat
 
 # Filtrar por la app:
 adb logcat | grep -i pivaa
-```
-
----
-
-## 11. Resumen rápido de comandos
-
-```bash
-# Directorio de trabajo
-mkdir -p ~/lab-pivaa
-cd ~/lab-pivaa
-
-# Descargar APK
-wget https://github.com/HTBridge/pivaa/raw/master/apks/pivaa.apk
-
-# Desempaquetar APK
-apktool d pivaa.apk -o pivaa_dec
-nano pivaa_dec/AndroidManifest.xml
-
-# ADB y dispositivo
-adb kill-server
-adb start-server
-adb devices
-adb connect 127.0.0.1:6555
-
-# Información del dispositivo
-adb -s 127.0.0.1:6555 shell getprop ro.product.model
-adb -s 127.0.0.1:6555 shell getprop ro.build.version.release
-
-# Instalar/Desinstalar PIVAA
-adb -s 127.0.0.1:6555 install pivaa.apk
-adb uninstall com.htbridge.pivaa
-
-# Shell y ficheros
-adb shell
-adb push pivaa.apk /sdcard/
-adb shell ls /sdcard/
-
-# Info de paquete y componentes
-adb shell dumpsys package com.htbridge.pivaa
-adb shell am start -n com.htbridge.pivaa/.MainActivity
-adb shell am startservice -n com.htbridge.pivaa/.handlers.VulnerableService
-
-# Logs
-adb logcat
 ```
