@@ -10,6 +10,8 @@ wget https://github.com/HTBridge/pivaa/raw/master/apks/pivaa.apk
 
 > Si `wget` falla, descarga el archivo desde el navegador y cópialo al directorio `~/lab-pivaa`.
 
+![Captura-01](Captura-01.png)
+
 ---
 
 ## 2. Análisis estático rápido con apktool
@@ -21,6 +23,8 @@ sudo apt update
 sudo apt install apktool -y
 ```
 
+![Captura-02-01](Captura-02-01.png)
+
 ### 2.2. Desempaquetar PIVAA
 
 ```bash
@@ -28,12 +32,16 @@ cd ~/lab-pivaa
 apktool d pivaa.apk -o pivaa_dec
 ```
 
+![Captura-02-02](Captura-02-02.png)
+
 ### 2.3. Revisar AndroidManifest.xml
 
 ```bash
 cd pivaa_dec
 nano AndroidManifest.xml
 ```
+
+![Captura-02-03](Captura-02-03.png)
 
 Comprueba:
 - `targetSdkVersion` y `minSdkVersion` (versiones de Android objetivo y mínima)
@@ -71,6 +79,8 @@ Se instalarán:
 - `gmtool` → Gestión por línea de comandos
 - ADB se instala automáticamente
 
+![Captura-03](Captura-03.png)
+
 ---
 
 ## 4. Crear y configurar el dispositivo virtual
@@ -98,11 +108,17 @@ genymotion
    - Interfaz: `eth0` (cable) o `wlan0` (wifi)
 6. Pulsa **Install** y espera a que termine
 
+![Captura-04-01](Captura-04-01.png)
+![Captura-04-02](Captura-04-02.png)
+
+
 ### 4.3. Iniciar el dispositivo
 
 1. Selecciona tu dispositivo en la lista
 2. Pulsa el icono de **Play**
 3. Espera a que Android arranque completamente
+
+![Captura-04-03](Captura-04-03.png)
 
 ---
 
@@ -136,6 +152,8 @@ adb -s 127.0.0.1:6555 shell getprop ro.build.version.release
 adb -s 127.0.0.1:6555 shell getprop ro.genymotion.version
 ```
 
+![Captura-05](Captura-05.png)
+
 ---
 
 ## 6. Instalar PIVAA en el emulador
@@ -147,17 +165,16 @@ cd ~/lab-pivaa
 adb -s 127.0.0.1:6555 install pivaa.apk
 ```
 
+![Captura-06-01](Captura-06-01.png)
+
+
 ### 6.2. Opción B: arrastrar y soltar
 
 1. Abre el emulador de Genymotion
 2. Arrastra `pivaa.apk` desde tu explorador hasta la ventana del emulador
 3. Espera a que se complete la instalación
 
-### 6.3. Desinstalar
-
-```bash
-adb uninstall com.htbridge.pivaa
-```
+![Captura-06-02](Captura-06-02.png)
 
 ---
 
@@ -170,6 +187,9 @@ adb uninstall com.htbridge.pivaa
 3. Contraseña: `admin`
 4. Pulsa **SIGN IN**
 
+![Captura-07-01](Captura-07-01.png)
+![Captura-07-02](Captura-07-02.png)
+
 ### 7.2. Ejemplo: explotación del servicio vulnerable
 
 1. En el menú de la app (tres puntos), selecciona **Service**
@@ -177,98 +197,4 @@ adb uninstall com.htbridge.pivaa
 3. El servicio `.handlers.VulnerableService` se ejecuta
 4. Abre el explorador de archivos del emulador y localiza los ficheros de audio grabados
 
----
-
-## 8. Comandos útiles de ADB
-
-### 8.1. Ayuda y listado
-
-```bash
-adb --help
-adb
-# Pulsa Tab para autocompletar opciones
-```
-
-### 8.2. Ver dispositivos conectados
-
-```bash
-adb devices
-```
-
-### 8.3. Modo root / unroot
-
-```bash
-adb root    # Modo privilegiado (root)
-adb unroot  # Volver a modo sin privilegios
-```
-
-> `adb root` permite acceder a rutas protegidas del sistema, inspeccionar ficheros internos de la app y modificar permisos temporalmente.
-
-### 8.4. Instalar / desinstalar APKs
-
-```bash
-adb install pivaa.apk
-adb -s 127.0.0.1:6555 install pivaa.apk
-adb uninstall com.htbridge.pivaa
-```
-
-### 8.5. Abrir shell en el dispositivo
-
-```bash
-adb shell
-# Dentro de la shell:
-ls
-id
-pwd
-exit  # Para salir
-```
-
-### 8.6. Copiar ficheros al emulador
-
-```bash
-adb push pivaa.apk /sdcard/
-adb shell
-ls /sdcard/
-exit
-```
-
----
-
-## 9. Interacción con componentes de la app
-
-### 9.1. Listar información del paquete
-
-```bash
-adb shell dumpsys package com.htbridge.pivaa
-```
-
-Muestra activities, servicios, providers, permisos, etc.
-
-### 9.2. Lanzar la Activity principal
-
-```bash
-adb shell am start -n com.htbridge.pivaa/.MainActivity
-```
-
-### 9.3. Iniciar el servicio vulnerable
-
-```bash
-adb shell am startservice -n com.htbridge.pivaa/.handlers.VulnerableService
-```
-
-> Esto demuestra que cualquier app (o un atacante con ADB) puede disparar el servicio si está exportado y sin protección.
-
----
-
-## 10. Visualización de logs
-
-```bash
-# Si solo hay un dispositivo conectado:
-adb logcat
-
-# Si hay varios, especifica el dispositivo:
-adb -s 127.0.0.1:6555 logcat
-
-# Filtrar por la app:
-adb logcat | grep -i pivaa
-```
+![Captura-07-03](Captura-07-03.png)
